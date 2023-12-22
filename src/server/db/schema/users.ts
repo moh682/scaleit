@@ -1,22 +1,24 @@
-import { sql, relations } from "drizzle-orm";
-import { varchar, timestamp } from "drizzle-orm/mysql-core";
-import { accounts } from "./accounts";
-import { sessions } from "./sessions";
-import { mysqlTable } from "../utils";
+import { sql } from 'drizzle-orm';
+import { varchar, timestamp, index, uniqueIndex } from 'drizzle-orm/mysql-core';
 
-export const users = mysqlTable("user", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 255 }).notNull(),
-  password: varchar("password", { length: 255 }).notNull(),
-  emailVerified: timestamp("emailVerified", {
-    mode: "date",
-    fsp: 3,
-  }).default(sql`CURRENT_TIMESTAMP(3)`),
-  image: varchar("image", { length: 255 }),
-});
+import { mysqlTable } from '../utils';
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-  sessions: many(sessions),
-}));
+export const users = mysqlTable(
+  'user',
+  {
+    id: varchar('id', { length: 255 })
+      .notNull()
+      .primaryKey()
+      .default(sql`(UUID())`),
+    firstname: varchar('firstname', { length: 255 }).notNull(),
+    lastname: varchar('lastname', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull().unique(),
+    emailVerifiedAt: timestamp('email_verified_at', { mode: 'date' }),
+    password: varchar('password', { length: 255 }).notNull(),
+    image: varchar('image', { length: 255 }),
+  },
+  (table) => ({
+    emailIndex: index('email_idx').on(table.email),
+    idIndex: uniqueIndex('id_idx').on(table.id),
+  }),
+);

@@ -6,9 +6,7 @@ import * as schema from "./schema";
 
 export const db = drizzle(
   new Client({
-    host: env.DATABASE_HOST,
-    password: env.DATABASE_PASSWORD,
-    username: env.DATABASE_USERNAME,
+    url: env.DATABASE_URL,
   }).connection(),
   { schema },
 );

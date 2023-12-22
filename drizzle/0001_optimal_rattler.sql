@@ -1,0 +1,1 @@
+ALTER TABLE `scaleit_user` MODIFY COLUMN `id` varchar(255) NOT NULL DEFAULT (UUID());
